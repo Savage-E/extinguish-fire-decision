@@ -1,0 +1,10 @@
+global  ru.vsu.extinguishfiredecision.Result resultObj;
+import ru.vsu.extinguishfiredecision.model.Fire;
+import ru.vsu.extinguishfiredecision.FireTypes;
+rule "Type-D rule"
+
+when
+    Fire(getType()=='натрий') or Fire(getType()=='магний') or Fire(getType()=='калий')
+    then
+    resultObj.setFireType(FireTypes.TYPE_D);
+end

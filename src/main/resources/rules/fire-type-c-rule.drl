@@ -1,0 +1,10 @@
+global  ru.vsu.extinguishfiredecision.Result resultObj;
+import ru.vsu.extinguishfiredecision.model.Fire;
+import ru.vsu.extinguishfiredecision.FireTypes;
+rule "Type-С rule"
+
+when
+    Fire(getType()=='электрообурудование')
+    then
+    resultObj.setFireType(FireTypes.TYPE_C);
+end
