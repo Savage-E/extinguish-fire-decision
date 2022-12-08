@@ -14,16 +14,25 @@ public class DroolsConfig {
     private static final String FIRE_TYPE_B_RULE = "rules/fire-type-b-rule.drl";
     private static final String FIRE_TYPE_C_RULE = "rules/fire-type-c-rule.drl";
     private static final String FIRE_TYPE_D_RULE = "rules/fire-type-d-rule.drl";
+
+    private static final String FIRE_EXTINGUISHERS_TYPE_A_RULE = "rules/fire-extinguishers-type-a.drl";
+    private static final String FIRE_EXTINGUISHERS_TYPE_B_RULE = "rules/fire-extinguishers-type-b.drl";
+    private static final String FIRE_EXTINGUISHERS_TYPE_C_RULE = "rules/fire-extinguishers-type-c.drl";
+    private static final String FIRE_EXTINGUISHERS_TYPE_D_RULE = "rules/fire-extinguishers-type-a.drl";
     private static final KieServices kieServices = KieServices.Factory.get();
 
     @Bean
     public KieContainer kieContainer() {
         KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
-        kieFileSystem.write(ResourceFactory.newClassPathResource(FIRE_TYPE_A_RULE))
-        ;
+        kieFileSystem.write(ResourceFactory.newClassPathResource(FIRE_TYPE_A_RULE));
         kieFileSystem.write(ResourceFactory.newClassPathResource(FIRE_TYPE_B_RULE));
         kieFileSystem.write(ResourceFactory.newClassPathResource(FIRE_TYPE_C_RULE));
         kieFileSystem.write(ResourceFactory.newClassPathResource(FIRE_TYPE_D_RULE));
+        kieFileSystem.write(ResourceFactory.newClassPathResource(FIRE_EXTINGUISHERS_TYPE_A_RULE));
+        kieFileSystem.write(ResourceFactory.newClassPathResource(FIRE_EXTINGUISHERS_TYPE_B_RULE));
+        kieFileSystem.write(ResourceFactory.newClassPathResource(FIRE_EXTINGUISHERS_TYPE_C_RULE));
+        kieFileSystem.write(ResourceFactory.newClassPathResource(FIRE_EXTINGUISHERS_TYPE_D_RULE));
+
         KieBuilder kb = kieServices.newKieBuilder(kieFileSystem);
         kb.buildAll();
         return kieServices.newKieContainer(kb.getKieModule().getReleaseId());

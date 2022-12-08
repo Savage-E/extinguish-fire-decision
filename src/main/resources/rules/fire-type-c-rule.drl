@@ -1,10 +1,11 @@
 global  ru.vsu.extinguishfiredecision.Result resultObj;
 import ru.vsu.extinguishfiredecision.model.Fire;
 import ru.vsu.extinguishfiredecision.FireTypes;
-rule "Type-С rule"
 
+rule "Fire-type-С rule"
 when
-    Fire(getType()=='электрообурудование')
-    then
-    resultObj.setFireType(FireTypes.TYPE_C);
+    $m : Fire()
+    Fire(getMaterial()=='электрообурудование')
+then
+    resultObj.setFire(new Fire(FireTypes.TYPE_C,$m.getMaterial()));
 end

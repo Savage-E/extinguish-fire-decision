@@ -1,9 +1,11 @@
 global  ru.vsu.extinguishfiredecision.Result resultObj;
 import ru.vsu.extinguishfiredecision.model.Fire;
 import ru.vsu.extinguishfiredecision.FireTypes;
-rule "Type-A rule"
+
+rule "Fire-type-A rule"
 when
-    Fire(getType()=='бумага') or Fire(getType()=='дерево') or Fire(getType()=='одежда')
+    $m : Fire()
+    Fire(getMaterial()=='бумага') or Fire(getMaterial()=='дерево') or Fire(getMaterial()=='одежда')
 then
-resultObj.setFireType(FireTypes.TYPE_A);
+    resultObj.setFire(new Fire(FireTypes.TYPE_A,$m.getMaterial()));
 end

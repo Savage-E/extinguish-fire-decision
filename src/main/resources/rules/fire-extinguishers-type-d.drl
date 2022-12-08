@@ -1,0 +1,11 @@
+global ru.vsu.extinguishfiredecision.Result resultObj;
+import java.util.List
+import  ru.vsu.extinguishfiredecision.model.Fire;
+import ru.vsu.extinguishfiredecision.FireExtinguisherTypes;
+
+rule "Fire-extinguishers-type-d  rule"
+when
+    Fire(getType()=='TYPE_D')
+then
+    resultObj.setFireExtinguisher(List.of(FireExtinguisherTypes.SPECIAL_POWDER_INJECTION));
+ end

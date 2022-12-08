@@ -1,10 +1,11 @@
 global  ru.vsu.extinguishfiredecision.Result resultObj;
 import ru.vsu.extinguishfiredecision.model.Fire;
 import ru.vsu.extinguishfiredecision.FireTypes;
-rule "Type-B rule"
 
+rule "Fire-type-B rule"
 when
-    Fire(getType()=='нефть') or Fire(getType()=='бензин')
+    $m : Fire()
+    Fire(getMaterial()=='нефть') or Fire(getMaterial()=='бензин') and Fire(getMaterial() !="")
     then
-    resultObj.setFireType(FireTypes.TYPE_B);
+    resultObj.setFire(new Fire(FireTypes.TYPE_B,$m.getMaterial()));
 end

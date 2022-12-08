@@ -1,31 +1,35 @@
 package ru.vsu.extinguishfiredecision;
 
+import ru.vsu.extinguishfiredecision.model.Fire;
+
+import java.util.List;
+
 public class Result {
-    private FireTypes fireTypes;
-    private FireExtinguisher fireExtinguisher;
+    private Fire fire;
+    private List<FireExtinguisherTypes> fireExtinguisherTypes;
 
-    public void setFireType(FireTypes fireTypes) {
-        this.fireTypes = fireTypes;
+    public void setFire(Fire fire) {
+        this.fire = fire;
     }
 
-    public void setFireExtinguisher(FireTypes fireTypes) {
-        this.fireTypes = fireTypes;
+    public void setFireExtinguisher(List<FireExtinguisherTypes> fireExtinguisherTypes) {
+        this.fireExtinguisherTypes = fireExtinguisherTypes;
     }
 
-    public FireTypes getFireType() {
-        return fireTypes;
+    public Fire getFire() {
+        return fire;
     }
 
-    public FireExtinguisher getfireExtinguisher() {
-        return fireExtinguisher;
+    public List<FireExtinguisherTypes> getfireExtinguisher() {
+        return fireExtinguisherTypes;
     }
 
     public boolean isFireTypeInit() {
-        return fireTypes != null;
+        return fire != null;
     }
 
     public boolean isFireExtinguisherTypeInit() {
-        return fireExtinguisher != null;
+        return fireExtinguisherTypes != null;
     }
 
 }

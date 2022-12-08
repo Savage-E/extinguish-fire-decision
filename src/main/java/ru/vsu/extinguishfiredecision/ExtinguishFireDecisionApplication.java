@@ -17,7 +17,7 @@ import java.util.*;
 @ComponentScan(basePackages = {"ru.vsu.extinguishfiredecision"})
 public class ExtinguishFireDecisionApplication {
     private final Set<String> validInputValue = new HashSet<>(Arrays.asList("бумага", "дерево", "одежда", "нефть", "бензин", "электрообурудование", "магний", "натрий", "калий"));
-//    private final Map<String, List<String>> fireTypeMaterialsMap = new HashMap<>() {
+    //    private final Map<String, List<String>> fireTypeMaterialsMap = new HashMap<>() {
 //        {
 //            put("ordinaryСombustibles", Arrays.asList("бумага", "дерево", "одежда"));
 //            put("flammableAndCombustibleLiquids", Arrays.asList("нефть", "бензин"));
@@ -50,6 +50,7 @@ public class ExtinguishFireDecisionApplication {
                 while (!check) {
                     check = checkResult(scanner, kieSession, result);
                 }
+
                 nextOp = readNextOperation(scanner);
             } catch (Exception e) {
                 nextOp = readNextOperation(scanner);
@@ -96,11 +97,16 @@ public class ExtinguishFireDecisionApplication {
 //                System.out.println("Неизвестный фактор");
 //            }
 //        }
-        if (result.isFireTypesInit()) {
-            showSolution(result.getFireType());
-            return true;
+        if (!result.isFireTypeInit()) {
+            return false;
         }
-        return false;
+
+        workWithKieSession(kieSession, result.getFire());
+
+        if (result.isFireExtinguisherTypeInit()) {
+            showSolution(result);
+        }
+        return true;
     }
 
     private boolean parseFactValue(String answer) {
@@ -118,8 +124,8 @@ public class ExtinguishFireDecisionApplication {
         kieSession.fireAllRules();
     }
 
-    private void showSolution(FireTypes fireTypes) {
-        switch (fireTypes) {
+    private void showSolution(Result result) {
+        switch (result.getFire().getType()) {
             case TYPE_A -> {
                 System.out.println("Решение : огнетушитель А");
             }
