@@ -17,16 +17,12 @@ import java.util.*;
 @ComponentScan(basePackages = {"ru.vsu.extinguishfiredecision"})
 public class ExtinguishFireDecisionApplication {
     private final Set<String> validInputValue = new HashSet<>(Arrays.asList("бумага", "дерево", "одежда", "нефть", "бензин", "электрообурудование", "магний", "натрий", "калий"));
-    //    private final Map<String, List<String>> fireTypeMaterialsMap = new HashMap<>() {
-//        {
-//            put("ordinaryСombustibles", Arrays.asList("бумага", "дерево", "одежда"));
-//            put("flammableAndCombustibleLiquids", Arrays.asList("нефть", "бензин"));
-//            put("energizedElectronicalEquipment", List.of("электрообурудование"));
-//            put("combustibleMetals", Arrays.asList("магний", "натрий", "калий"));
-//        }
-//    };
+    private final KieContainer kieContainer;
+
     @Autowired
-    private KieContainer kieContainer;
+    public ExtinguishFireDecisionApplication(KieContainer kieContainer) {
+        this.kieContainer = kieContainer;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(ExtinguishFireDecisionApplication.class, args);
@@ -49,6 +45,9 @@ public class ExtinguishFireDecisionApplication {
                 boolean check = false;
                 while (!check) {
                     check = checkResult(scanner, kieSession, result);
+                    //обнуляем нашу глобальную переменную для следующих попыток
+                    result.setFireExtinguisher(null);
+                    result.setFire(null);
                 }
 
                 nextOp = readNextOperation(scanner);
@@ -61,42 +60,15 @@ public class ExtinguishFireDecisionApplication {
     private boolean checkResult(Scanner scanner, KieSession kieSession, Result result) {
         System.out.print("Какой материал подвержен горению?: ");
         String answer = scanner.next();
-//        String category = "";
-//        for (Map.Entry<String, List<String>> entry : fireTypeMaterialsMap.entrySet()) {
-//            for (String value : entry.getValue()) {
-//                if (value.equals(answer)) {
-//                    category = entry.getKey();
-//                    break;
-//                }
-//            }
-//        }
+        //Тут мы переводит введенный материал в lower case
+        answer = answer.toLowerCase();
+
         if (!parseFactValue(answer)) {
             return false;
         }
         Fire fire = new Fire(answer);
         workWithKieSession(kieSession, fire);
-//        switch (category) {
-//            case "ordinaryСombustibles" -> {
-//                Fire fire = new Fire(answer);
-//                OrdinaryCombustible ordinaryCombustible = new OrdinaryCombustible();
-//                workWithKieSession(kieSession, ordinaryCombustible);
-//            }
-//            case "flammableAndCombustibleLiquids" -> {
-//                FlammableLiquid flammableLiquid = new FlammableLiquid();
-//                workWithKieSession(kieSession, flammableLiquid);
-//            }
-//            case "energizedElectronicalEquipment" -> {
-//                EnergizedEquipment energizedEquipment = new EnergizedEquipment();
-//                workWithKieSession(kieSession, energizedEquipment);
-//            }
-//            case "combustibleMetals" -> {
-//                CombustibleMetal combustibleMetal = new CombustibleMetal();
-//                workWithKieSession(kieSession, combustibleMetal);
-//            }
-//            default -> {
-//                System.out.println("Неизвестный фактор");
-//            }
-//        }
+
         if (!result.isFireTypeInit()) {
             return false;
         }
@@ -105,44 +77,43 @@ public class ExtinguishFireDecisionApplication {
 
         if (result.isFireExtinguisherTypeInit()) {
             showSolution(result);
+            return true;
         }
-        return true;
+        return false;
     }
 
     private boolean parseFactValue(String answer) {
         if (answer.equals("выход")) System.exit(0);
         if (!validInputValue.contains(answer)) {
-            System.out.println("Недопустимое значение");
+            System.out.println("Недопустимое значение, введите один из следующих фактов в нижнем регистре или верхнем регистре ->");
+            System.out.println(validInputValue);
             return false;
-            //  throw new IllegalArgumentException();
         }
         return true;
     }
 
     private void workWithKieSession(KieSession kieSession, Object ob) {
         kieSession.insert(ob);
-        kieSession.fireAllRules();
+        kieSession.fireAllRules(8);
     }
 
     private void showSolution(Result result) {
         switch (result.getFire().getType()) {
             case TYPE_A -> {
-                System.out.println("Решение : огнетушитель А");
+                System.out.println("Решение : так как у нас класс пожара А, используем огнетушители " + result.getfireExtinguisher().toString() + "\n");
+                System.out.println("Для тушения можно использольовать простую воду");
             }
-            case TYPE_B -> {
-                System.out.println("Решение : огнетушитель B");
-            }
-            case TYPE_C -> {
-                System.out.println("Решение : огнетушитель C");
-            }
+            case TYPE_B -> System.out.println("Решение: так как у нас класс пожара B, используем огнетушители " + result.getfireExtinguisher().toString());
+            case TYPE_C -> System.out.println("Решение: так как у нас класс пожара C, используем огнетушители " + result.getfireExtinguisher().toString());
             case TYPE_D -> {
-                System.out.println("Решение : огнетушитель D");
+                System.out.println("Решение: так как у нас класс пожара D, используем огнетушитель " + result.getfireExtinguisher().toString() + "\n");
+                System.out.println("По возможности постарайтесь отключить электроприбор от розетки или иного источника питания");
             }
         }
     }
 
     private String readNextOperation(Scanner scanner) {
-        System.out.print("Хотите выйти? : ");
+        System.out.print("Хотите выйти?: ");
         return scanner.next();
     }
 

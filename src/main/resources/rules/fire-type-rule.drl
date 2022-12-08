@@ -1,0 +1,38 @@
+global  ru.vsu.extinguishfiredecision.Result resultObj;
+import ru.vsu.extinguishfiredecision.model.Fire;
+import ru.vsu.extinguishfiredecision.FireTypes;
+import ru.vsu.extinguishfiredecision.Facts;
+
+rule "Fire-type-A rule"
+  when
+    $m : Fire()
+    Fire(getMaterial()==Facts.PAPER) or Fire(getMaterial()==Facts.WOOD) or Fire(getMaterial()==Facts.CLOTH)
+  then
+    resultObj.setFire(new Fire(FireTypes.TYPE_A,$m.getMaterial()));
+end
+
+rule "Fire-type-B rule"
+  when
+    $m : Fire()
+    Fire(getMaterial()==Facts.OIL) or Fire(getMaterial()==Facts.GAS)
+  then
+    resultObj.setFire(new Fire(FireTypes.TYPE_B,$m.getMaterial()));
+end
+
+
+rule "Fire-type-С rule"
+  when
+    $m : Fire()
+    Fire(getMaterial()==Facts.ELECTO)
+  then
+    resultObj.setFire(new Fire(FireTypes.TYPE_C,$m.getMaterial()));
+end
+
+
+rule "Fire-type-D rule"
+  when
+    $m : Fire()
+    Fire(getMaterial()==Facts.SODIUM) or Fire(getMaterial()==Facts.POTASSIUM) or Fire(getMaterial()==Facts.MAGNESIUM)
+  then
+    resultObj.setFire(new Fire(FireTypes.TYPE_D,$m.getMaterial()));
+end
