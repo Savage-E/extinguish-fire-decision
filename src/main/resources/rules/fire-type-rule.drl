@@ -1,0 +1,50 @@
+global  ru.vsu.extinguishfiredecision.Result resultObj;
+import ru.vsu.extinguishfiredecision.model.Fire;
+import ru.vsu.extinguishfiredecision.FireTypes;
+
+rule "Fire-type-A rule"
+
+when
+    $m : Fire()
+    Fire(getMaterial()=='бумага') or Fire(getMaterial()=='дерево') or Fire(getMaterial()=='одежда')
+then
+    resultObj.setFire(new Fire(FireTypes.TYPE_A,$m.getMaterial()));
+end
+
+
+global  ru.vsu.extinguishfiredecision.Result resultObj;
+import ru.vsu.extinguishfiredecision.model.Fire;
+import ru.vsu.extinguishfiredecision.FireTypes;
+
+rule "Fire-type-B rule"
+when
+    $m : Fire()
+    Fire(getMaterial()=='нефть') or Fire(getMaterial()=='бензин')
+    then
+    resultObj.setFire(new Fire(FireTypes.TYPE_B,$m.getMaterial()));
+end
+
+
+global  ru.vsu.extinguishfiredecision.Result resultObj;
+import ru.vsu.extinguishfiredecision.model.Fire;
+import ru.vsu.extinguishfiredecision.FireTypes;
+
+rule "Fire-type-С rule"
+when
+    $m : Fire()
+    Fire(getMaterial()=='электрообурудование')
+then
+    resultObj.setFire(new Fire(FireTypes.TYPE_C,$m.getMaterial()));
+end
+
+global  ru.vsu.extinguishfiredecision.Result resultObj;
+import ru.vsu.extinguishfiredecision.model.Fire;
+import ru.vsu.extinguishfiredecision.FireTypes;
+
+rule "Fire-type-D rule"
+when
+    $m : Fire()
+    Fire(getMaterial()=='натрий') or Fire(getMaterial()=='магний') or Fire(getMaterial()=='калий')
+then
+    resultObj.setFire(new Fire(FireTypes.TYPE_D,$m.getMaterial()));
+end

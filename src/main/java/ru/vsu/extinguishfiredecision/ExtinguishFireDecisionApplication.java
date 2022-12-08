@@ -17,14 +17,7 @@ import java.util.*;
 @ComponentScan(basePackages = {"ru.vsu.extinguishfiredecision"})
 public class ExtinguishFireDecisionApplication {
     private final Set<String> validInputValue = new HashSet<>(Arrays.asList("бумага", "дерево", "одежда", "нефть", "бензин", "электрообурудование", "магний", "натрий", "калий"));
-    //    private final Map<String, List<String>> fireTypeMaterialsMap = new HashMap<>() {
-//        {
-//            put("ordinaryСombustibles", Arrays.asList("бумага", "дерево", "одежда"));
-//            put("flammableAndCombustibleLiquids", Arrays.asList("нефть", "бензин"));
-//            put("energizedElectronicalEquipment", List.of("электрообурудование"));
-//            put("combustibleMetals", Arrays.asList("магний", "натрий", "калий"));
-//        }
-//    };
+
     @Autowired
     private KieContainer kieContainer;
 
@@ -49,6 +42,8 @@ public class ExtinguishFireDecisionApplication {
                 boolean check = false;
                 while (!check) {
                     check = checkResult(scanner, kieSession, result);
+                    result.setFireExtinguisher(null);
+                    result.setFire(null);
                 }
 
                 nextOp = readNextOperation(scanner);
@@ -61,42 +56,13 @@ public class ExtinguishFireDecisionApplication {
     private boolean checkResult(Scanner scanner, KieSession kieSession, Result result) {
         System.out.print("Какой материал подвержен горению?: ");
         String answer = scanner.next();
-//        String category = "";
-//        for (Map.Entry<String, List<String>> entry : fireTypeMaterialsMap.entrySet()) {
-//            for (String value : entry.getValue()) {
-//                if (value.equals(answer)) {
-//                    category = entry.getKey();
-//                    break;
-//                }
-//            }
-//        }
+
         if (!parseFactValue(answer)) {
             return false;
         }
         Fire fire = new Fire(answer);
         workWithKieSession(kieSession, fire);
-//        switch (category) {
-//            case "ordinaryСombustibles" -> {
-//                Fire fire = new Fire(answer);
-//                OrdinaryCombustible ordinaryCombustible = new OrdinaryCombustible();
-//                workWithKieSession(kieSession, ordinaryCombustible);
-//            }
-//            case "flammableAndCombustibleLiquids" -> {
-//                FlammableLiquid flammableLiquid = new FlammableLiquid();
-//                workWithKieSession(kieSession, flammableLiquid);
-//            }
-//            case "energizedElectronicalEquipment" -> {
-//                EnergizedEquipment energizedEquipment = new EnergizedEquipment();
-//                workWithKieSession(kieSession, energizedEquipment);
-//            }
-//            case "combustibleMetals" -> {
-//                CombustibleMetal combustibleMetal = new CombustibleMetal();
-//                workWithKieSession(kieSession, combustibleMetal);
-//            }
-//            default -> {
-//                System.out.println("Неизвестный фактор");
-//            }
-//        }
+
         if (!result.isFireTypeInit()) {
             return false;
         }
@@ -105,8 +71,9 @@ public class ExtinguishFireDecisionApplication {
 
         if (result.isFireExtinguisherTypeInit()) {
             showSolution(result);
+            return true;
         }
-        return true;
+        return false;
     }
 
     private boolean parseFactValue(String answer) {
@@ -114,29 +81,30 @@ public class ExtinguishFireDecisionApplication {
         if (!validInputValue.contains(answer)) {
             System.out.println("Недопустимое значение");
             return false;
-            //  throw new IllegalArgumentException();
         }
         return true;
     }
 
     private void workWithKieSession(KieSession kieSession, Object ob) {
         kieSession.insert(ob);
-        kieSession.fireAllRules();
+        kieSession.fireAllRules(8);
     }
 
     private void showSolution(Result result) {
         switch (result.getFire().getType()) {
             case TYPE_A -> {
-                System.out.println("Решение : огнетушитель А");
+                System.out.println("Решение : так как у нас класс пожара А, используем огнетушители " + result.getfireExtinguisher().toString() + "\n");
+                System.out.println("Можно использольовать простую воду");
             }
             case TYPE_B -> {
-                System.out.println("Решение : огнетушитель B");
+                System.out.println("Решение : так как у нас класс пожара B, используем огнетушители " + result.getfireExtinguisher().toString());
             }
             case TYPE_C -> {
-                System.out.println("Решение : огнетушитель C");
+                System.out.println("Решение : так как у нас класс пожара C, используем огнетушители " + result.getfireExtinguisher().toString());
             }
             case TYPE_D -> {
-                System.out.println("Решение : огнетушитель D");
+                System.out.println("Решение : так как у нас класс пожара D, используем огнетушитель " + result.getfireExtinguisher().toString() + "\n");
+                System.out.println("По возможности постарайтесь отключить электроприбор от розетки или иного источника питания");
             }
         }
     }
